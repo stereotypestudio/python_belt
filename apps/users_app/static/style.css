@@ -1,0 +1,21 @@
+.btn {
+	margin-top: 10px;
+}
+
+.col {
+	padding: 20px;
+}
+
+.card {
+	padding: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+nav .btn {
+
+	margin-left: 10px;
+}
+
+.author {
+	font-weight: bold;

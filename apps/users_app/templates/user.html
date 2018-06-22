@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login and Registration</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+	{% load static %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" 
+</head>
+<body>
+<div class="container">
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+	  <a class="navbar-brand" href="#">uQuote</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarText">
+	   <span class="navbar-text">
+	      Well hey there {{request.session.username.firstname}}
+	    </span>
+	      <a href="/logout"><button class="btn btn-outline-light my-2 my-sm-0" type="button">Log out</button></a>
+	      <a href = "/update"><button class="btn btn-outline-light my-2 my-sm-0" type="button">Edit Info</button></a>
+	      <a href = "/welcome"><button class="btn btn-outline-light my-2 my-sm-0" type="button">Back</button></a>
+	  
+
+	  </div>
+	</nav>
+
+	<div class="row">
+		<div class="col col-8">
+	<h2>Quotes by {{user.first_name}}</h2>
+
+	{% for quote in quotes%}
+		<div class="card">
+			<span class = author>{{quote.author}}:</span>
+			"{{quote.content}}"
+		</div>
+	{% endfor %}
+	</div>
+	</div>
+	</div>
+
+</body>
+</html>
