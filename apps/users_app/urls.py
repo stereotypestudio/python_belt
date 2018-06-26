@@ -12,5 +12,5 @@ urlpatterns = [
 	path('<id>/user', views.show),
 	path('update', views.userInfo),
 	path('submitEdit', views.submitEdit),
-	path('deleteQuote', views.deleteQuote),
+	path('<id>/deleteQuote', views.deleteQuote),
 ]

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
+import bcrypt
 import re
 # Create your models here.
 
@@ -20,7 +21,7 @@ class UserManager(models.Manager):
 			errors['email'] = "Email exists"
 		elif postData['password'] != postData['confirm-pw']:
 			errors['password'] = "Passwords must match"
-		elif postData['password'] < 8:
+		elif len(postData['password']) < 8:
 			errors['password'] = "Passwords must be at least 8 characters match"
 		return errors
 
@@ -34,8 +35,33 @@ class UserManager(models.Manager):
 			errors['email'] = "Must be a valid email"
 		elif len(postData['email']) < 1:
 			errors['email'] = "Email can't be blank"
-		elif User.objects.filter(email = postData['email']):
-			errors['email'] = "Email exists"
+		# elif User.objects.filter(email = postData['email']):
+		# 	errors['email'] = "Email exists"
+		elif postData['email'] != postData['currentEmail']:
+			existing_user_list = User.objects.filter(email=postData['email'])
+			if len(existing_user_list) == 0:
+				errors['email'] = "user doesn't exist"
+
+		# if not User.objects.filter(email=postData['email']).exists():
+		# 	errors['email'] = "User doesn't exist"
+
+		return errors
+
+	def login_validator(self, postData):
+		errors = {}
+		if not EMAIL_REGEX.match(postData['email']):
+			errors['email'] = "Must be a valid email"
+		# if not User.objects.filter(email=postData['email']).exists():
+		# 	errors['email'] = "User doesn't exist"
+		existing_user_list = User.objects.filter(email=postData['email'])
+		# if len(existing_user_list) == 0:
+		# 	errors['email'] = "user doesn't exist"
+		if len(existing_user_list) > 0:
+			# Not sure about this
+			if not bcrypt.checkpw(postData['password'].encode(), existing_user_list[0].password_hash.encode()): 
+				errors['password'] = "Invalid password/email combination"
+		else:
+			errors['password'] = "Invalid password / email combination"
 		return errors
 
 class User(models.Model):

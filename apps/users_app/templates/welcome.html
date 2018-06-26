@@ -56,8 +56,7 @@
 				</form>
 				{% endif %}
 				{% if quote.user.id == request.session.user %}
-				<form action = "/deleteComment">
-					<input type="hidden" name="quote-id" value = "{{quote.id}}">
+				<form action = "{{quote.id}}/deleteQuote">
 					<button class = "btn btn-danger">Delete</button>
 				</form>
 				{% endif %}

@@ -47,11 +47,12 @@
 				<form class = "form-group" action = "/submitEdit" method = "post">
 					{% csrf_token %}
 					<label>First Name:</label>
-					<input class = "form-control" type="text" name="first-name" placeholder="{{user.first_name}}">
+					<input class = "form-control" type="text" name="first-name" value="{{user.first_name}}">
 					<label>Last Name:</label>
-					<input class = "form-control" type="text" name="last-name" placeholder="{{user.last_name}}">
+					<input class = "form-control" type="text" name="last-name" value="{{user.last_name}}">
 					<label>Email:</label>
-					<input class = "form-control" type="text" name="email" placeholder="{{user.email}}">
+					<input class = "form-control" type="text" name="email" value="{{user.email}}">
+					<input type="hidden" name="currentEmail" value = "{{user.email">
 
 					<button class = "btn btn-primary" type = "submit">Update</button>
 

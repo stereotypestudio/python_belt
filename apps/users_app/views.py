@@ -9,26 +9,36 @@ def index(request):
 	return render(request, "index.html")
 
 def login(request):
-	user = User.objects.get(email=request.POST['email'])
 
-	if bcrypt.checkpw(request.POST['password'].encode(), user.password_hash.encode()):
-		if "user" not in request.session:
-			request.session['user'] = user.id
-		else:
-			request.session['user'] = user.id
-		if "user-name" not in request.session:
-			request.session['username'] = {"firstname" : user.first_name, "lastname" : user.last_name}
-		else:
-			request.session['username'] = {"firstname" : user.first_name, "lastname" : user.last_name}
-		request.session['loggedin'] = True
-		return redirect('/welcome')
+	errors = User.objects.login_validator(request.POST)
+
+	if len(errors):
+		for key, value in errors.items():
+			messages.error(request, value)
+			return redirect('/')
 	else:
-		return redirect('/')
+		user = User.objects.get(email=request.POST['email'])
+
+		if bcrypt.checkpw(request.POST['password'].encode(), user.password_hash.encode()):
+			if "user" not in request.session:
+				request.session['user'] = user.id
+			else:
+				request.session['user'] = user.id
+			if "user-name" not in request.session:
+				request.session['username'] = {"firstname" : user.first_name, "lastname" : user.last_name}
+			else:
+				request.session['username'] = {"firstname" : user.first_name, "lastname" : user.last_name}
+			request.session['loggedin'] = True
+			return redirect('/welcome')
+		else:
+			return redirect('/')
 
 def logout(request):
 
 	request.session['loggedin'] = False
 	request.session['user'] = 0
+
+	request.session.clear()
 
 	return redirect("/")
 
@@ -110,6 +120,8 @@ def userInfo(request):
 
 	user = User.objects.get(id = request.session['user'])
 
+	request.session['email'] = user.email
+
 	return render(request, "update.html", {"user": user})
 
 def submitEdit(request):
@@ -126,7 +138,9 @@ def submitEdit(request):
 
 		user.first_name = request.POST['first-name']
 		user.last_name = request.POST['last-name']
-		user.email = request.POST['email']
+		
+		if request.POST['email'] == request.session['email']:
+			request.POST = None
 
 		user.save()
 
@@ -134,10 +148,11 @@ def submitEdit(request):
 
 		return redirect('/welcome')
 
-def deleteQuote(request):
+def deleteQuote(request, id):
 
-	quote = Quote.objects.get(id = request.POST['quote-id'])
+	quote = Quote.objects.get(id = id)
 
 	quote.delete()
 
+	return redirect('/welcome')
 
